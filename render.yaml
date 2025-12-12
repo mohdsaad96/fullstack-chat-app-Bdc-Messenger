@@ -1,12 +1,11 @@
 services:
   - type: web
     name: bdc-messenger-backend
-    env: node
+    runtime: node
     region: oregon
     plan: free
-    rootDir: backend
-    buildCommand: npm install --prefix backend
-    startCommand: npm start --prefix backend
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
