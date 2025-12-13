@@ -21,8 +21,12 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
 
 // Configure CORS with proper origin handling
+const defaultFrontend = "https://fullstack-chat-app-bdc-messenger.vercel.app";
 const corsOrigin = process.env.NODE_ENV === "production" 
-  ? (process.env.FRONTEND_URL || "").split(",").map(url => url.trim()).filter(url => url)
+  ? (process.env.FRONTEND_URL || defaultFrontend)
+      .split(",")
+      .map((url) => url.trim())
+      .filter((url) => url)
   : true;
 
 console.log("CORS Origin configured:", corsOrigin);
@@ -38,13 +42,7 @@ app.use(
 const routesModule = await import('./routes/index.js');
 app.use('/api', routesModule.default);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-  });
-}
+// Frontend is hosted separately on Vercel; avoid serving dist here to prevent ENOENT
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, "0.0.0.0", () => {
