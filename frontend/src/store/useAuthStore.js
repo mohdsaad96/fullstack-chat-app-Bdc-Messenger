@@ -124,9 +124,13 @@ export const useAuthStore = create((set, get) => ({
       query: {
         userId: authUser._id,
       },
+      reconnectionDelay: 1000,
+      reconnection: true,
+      reconnectionAttempts: 5,
     });
     socket.connect();
     socket.on("connect", () => {
+      console.log("✅ Socket connected to:", BASE_URL);
       // ensure server registers this user (fallback/explicit register)
       try {
         socket.emit("user-connected", authUser._id);
@@ -135,7 +139,7 @@ export const useAuthStore = create((set, get) => ({
       }
     });
     socket.on("connect_error", (err) => {
-      console.error("Socket connect_error", err);
+      console.error("❌ Socket connect_error to", BASE_URL, ":", err);
     });
 
     set({ socket: socket });
