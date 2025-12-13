@@ -12,16 +12,24 @@ console.log("Environment loaded. Checking vars:");
 console.log("PORT:", process.env.PORT);
 console.log("MONGODB_URI exists:", !!process.env.MONGODB_URI);
 console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+
 const __dirname = path.resolve();
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cookieParser());
+
+// Configure CORS with proper origin handling
+const corsOrigin = process.env.NODE_ENV === "production" 
+  ? (process.env.FRONTEND_URL || "").split(",").map(url => url.trim()).filter(url => url)
+  : true;
+
+console.log("CORS Origin configured:", corsOrigin);
+
 app.use(
   cors({
-    // Allow any origin in development (Vite may pick a different port like 5173 or 5174).
-    // In production, set FRONTEND_URL env var to your front-end origin.
-    origin: process.env.NODE_ENV === "production" ? process.env.FRONTEND_URL || "" : true,
+    origin: corsOrigin,
     credentials: true,
   })
 );

@@ -8,7 +8,10 @@ import { randomInt } from "crypto";
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
   try {
+    console.log('Signup attempt for:', email);
+    
     if (!fullName || !email || !password) {
+      console.log('Missing required fields:', { fullName: !!fullName, email: !!email, password: !!password });
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -18,7 +21,10 @@ export const signup = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (user) return res.status(400).json({ message: "Email already exists" });
+    if (user) {
+      console.log('Email already exists:', email);
+      return res.status(400).json({ message: "Email already exists" });
+    }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -35,10 +41,10 @@ export const signup = async (req, res) => {
     const usernameCandidate = `${baseName}${Date.now().toString().slice(-6)}`;
     newUser.username = usernameCandidate;
 
-    console.log('Signup payload:', req.body);
     if (newUser) {
       // save user first, then generate jwt token
       await newUser.save();
+      console.log('User created successfully:', email);
       // generate jwt token here
       generateToken(newUser._id, res);
 
@@ -54,24 +60,29 @@ export const signup = async (req, res) => {
   } catch (error) {
     console.error("Error in signup controller", error);
     // In development return the error message to help debugging
-    res.status(500).json({ message: error.message || "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error: " + error.message });
   }
 };
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
+    console.log("Login attempt for email:", email);
+    
     const user = await User.findOne({ email });
 
     if (!user) {
+      console.log("User not found:", email);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
+      console.log("Password incorrect for user:", email);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    console.log("Login successful for user:", email);
     generateToken(user._id, res);
 
     res.status(200).json({
@@ -82,7 +93,8 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in login controller", error.message);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error("Full error:", error);
+    res.status(500).json({ message: "Internal Server Error: " + error.message });
   }
 };
 
