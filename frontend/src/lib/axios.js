@@ -18,8 +18,12 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-// Add request interceptor for debugging
+// Add request interceptor to include token from localStorage (fallback for mobile)
 axiosInstance.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   console.log("API Request:", config.url, "Full URL:", config.baseURL + config.url);
   return config;
 }, (error) => {
