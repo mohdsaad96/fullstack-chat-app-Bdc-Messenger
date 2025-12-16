@@ -2,7 +2,7 @@ import axios from "axios";
 
 // In production, use the backend URL from environment variable
 // In development, use relative /api path (Vite proxy handles this)
-const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const backendURL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.PROD ? "https://bdc-messenger-backend.onrender.com" : "http://localhost:5000");
 const baseURL = import.meta.env.PROD 
   ? `${backendURL}/api`
   : "/api";

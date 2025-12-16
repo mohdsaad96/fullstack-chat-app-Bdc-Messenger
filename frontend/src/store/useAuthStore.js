@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 // Socket should talk to the backend origin (no /api).
 const BASE_URL = import.meta.env.DEV
   ? "http://localhost:5000"
-  : import.meta.env.VITE_BACKEND_URL || "";
+  : import.meta.env.VITE_BACKEND_URL || "https://bdc-messenger-backend.onrender.com";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
