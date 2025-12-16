@@ -96,25 +96,32 @@ const Sidebar = () => {
         </button>
         <div className="flex-1 overflow-x-auto flex gap-2 px-2">
           {filteredUsers.map((user) => (
-            <button
-              key={user._id}
-              onClick={() => setSelectedUser(user)}
-              className={`relative flex flex-col items-center justify-center ${selectedUser?._id === user._id ? "ring-2 ring-primary" : ""}`}
-              style={{ minWidth: 48 }}
-            >
-              <img
-                src={user.profilePic || "/avatar.png"}
-                alt={user.name}
-                className="size-8 object-cover rounded-full"
-              />
-              {onlineUsers.includes(user._id) && (
-                <span className="absolute bottom-0 right-0 size-2 bg-green-500 rounded-full ring-2 ring-zinc-900" />
-              )}
-            </button>
+            <div key={user._id} className="flex flex-col items-center gap-0.5" style={{ minWidth: 48 }}>
+              <button
+                onClick={() => setSelectedUser(user)}
+                className={`relative flex flex-col items-center justify-center ${selectedUser?._id === user._id ? "ring-2 ring-primary" : ""}`}
+              >
+                <img
+                  src={user.profilePic || "/avatar.png"}
+                  alt={user.name}
+                  className="size-8 object-cover rounded-full"
+                />
+                {onlineUsers.includes(user._id) && (
+                  <span className="absolute bottom-0 right-0 size-2 bg-green-500 rounded-full ring-2 ring-zinc-900" />
+                )}
+              </button>
+              <button
+                onClick={() => setModalUserId(user._id)}
+                className="text-xs text-primary hover:text-primary-focus p-1"
+                title="View profile"
+              >
+                <Eye className="size-3" />
+              </button>
+            </div>
           ))}
         </div>
         <button className="flex flex-col items-center justify-center" disabled>
-          <Eye className="size-6" />
+          <Users className="size-6" />
         </button>
       </nav>
       {/* User profile modal for mobile (optional, can be triggered differently) */}
