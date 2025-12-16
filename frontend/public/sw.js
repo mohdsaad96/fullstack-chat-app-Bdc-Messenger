@@ -1,9 +1,11 @@
-const CACHE_NAME = 'bdc-messenger-v1';
+// Bump the cache version to force clients to fetch fresh assets
+const CACHE_NAME = 'bdc-messenger-v3';
 const APP_SHELL = [
   '/',
+  '/index.html',
   '/manifest.webmanifest',
-  '/icons/icon-192.svg',
-  '/icons/icon-512.svg',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
 ];
 
 self.addEventListener('install', (event) => {
